@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { register } from "../api/auth";
+import { useMutation } from "@tanstack/react-query";
+import UserContext from "../context/UserContext";
 
 const Register = () => {
   const [userInfo, setUserInfo] = useState({});
+  const [user, setUser] = useContext(UserContext);
 
   const handleChange = (e) => {
     if (e.target.name === "image") {
@@ -11,9 +15,17 @@ const Register = () => {
     }
   };
 
+  const { mutate: register_mutate } = useMutation({
+    mutationKey: ["register"],
+    mutationFn: () => register(userInfo),
+    onSuccess: () => {
+      setUser(true);
+    },
+  });
+
   const handleFormSubmit = (e) => {
-    // e.preventDefault();
-    // Add register logic here
+    e.preventDefault();
+    register_mutate();
   };
 
   return (
@@ -88,7 +100,8 @@ const Register = () => {
           <div className="flex justify-center">
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors
+            "
             >
               Register
             </button>
